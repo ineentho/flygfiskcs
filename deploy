@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-message=git log -1 --pretty=%B
+message=$(git log -1 --pretty=%B)
 
 createWebDist() {
     broccoli build out
