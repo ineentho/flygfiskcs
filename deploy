@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+message=git log -1 --pretty=%B
+
+createWebDist() {
+    broccoli build out
+    git clone git@github.com:ineentho/flygfiskcs.git --branch gh-pages --single-branch gh-pages
+    cd gh-pages
+    git config user.name "Circle CI"
+    git config user.email hk.henrik+circle@gmail.com
+
+    rm -rf ./*
+    mv ../out/* .
+    git add -A
+    git commit -m "Build \"$message\""
+    git push
+}
+
+createWebDist
