@@ -7,7 +7,7 @@ dependencies:
     - npm install -g broccoli-cli
 test:
   override:
-    -
+    - echo 'No tests yet'
 deployment:
   master:
     branch: master
