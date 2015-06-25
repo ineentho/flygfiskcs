@@ -13,6 +13,10 @@ js = browserify(js, {
     outputFile: 'main.js'
 });
 
+var socketIO = funnel('./node_modules/socket.io-client/socket.io.js', {
+    destDir: 'libs/socket.io.js'
+});
+
 var stylus = compileStylus('./app/styl/', 'main.styl', './main.css');
 
 var jade = compileJade('./app/jade');
@@ -22,4 +26,4 @@ var screenshots = funnel('screenshots', {
 });
 
 
-module.exports = mergeTrees([jade, screenshots, js, stylus]);
+module.exports = mergeTrees([jade, screenshots, js, stylus, socketIO]);
