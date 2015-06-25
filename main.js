@@ -10,6 +10,12 @@ var _module3 = _interopRequireDefault(_module2);
 console.log('asd');
 
 (0, _module3['default'])();
+
+var socket = io('http://fj100.ineentho.com:3000/');
+
+socket.on('kill', function (data) {
+    document.querySelector('.feed').innerHTML += JSON.stringify(data) + '<br>';
+});
 },{"./module":2}],2:[function(require,module,exports){
 'use strict';
 
