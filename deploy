@@ -11,6 +11,13 @@ createWebDist() {
 
     rm -rf ./*
     mv ../out/* .
+
+    # Copy the circle.yml to gh-pages as well to avoid building this branch
+    cp ../circle.yml .
+
+    # Use custom domain
+    echo 'flygfisk.ineentho.com' > CNAME
+
     git add -A
     git commit -m "Build \"$message\""
     git push
