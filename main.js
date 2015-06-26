@@ -7,14 +7,46 @@ var _module2 = require('./module');
 
 var _module3 = _interopRequireDefault(_module2);
 
+var feed = document.querySelector('.feed');
+
 console.log('asd');
 
 (0, _module3['default'])();
 
 var socket = io('http://fj100.ineentho.com:3000/');
-
+function message(data) {
+    feed.innerHTML = data + '<br>' + feed.innerHTML;
+}
 socket.on('kill', function (data) {
-    document.querySelector('.feed').innerHTML += JSON.stringify(data) + '<br>';
+    message(JSON.stringify(data));
+});
+
+socket.on('connect', function () {
+    message('Connected');
+});
+
+socket.on('connect_error', function () {
+    message('Connection error');
+});
+
+socket.on('reconnect', function () {
+    message('Reconnected');
+});
+
+socket.on('reconnect_attempt', function () {
+    message('reconnect_attempt');
+});
+
+socket.on('reconnecting', function (n) {
+    message('reconnecting #' + n);
+});
+
+socket.on('reconnect_error', function () {
+    message('reconnect_error');
+});
+
+socket.on('reconnect_failed', function () {
+    message('reconnect_failed');
 });
 },{"./module":2}],2:[function(require,module,exports){
 'use strict';
