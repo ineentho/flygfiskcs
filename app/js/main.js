@@ -7,7 +7,7 @@ console.log('asd');
 
 test();
 
-const connectionUrl = window.location.hash.substr(1) || 'http://flygfiskcs-ineentho.rhcloud.com/';
+const connectionUrl = window.location.hash.substr(1) || 'http://flygfisk-stats.ineentho.com/';
 var socket = io(connectionUrl);
 message('Connecting to ' + connectionUrl);
 function message(data) {
