@@ -13,16 +13,18 @@ console.log('asd');
 
 (0, _module3['default'])();
 
-var socket = io('http://fj100.ineentho.com:3000/');
+var connectionUrl = window.location.hash.substr(1) || 'http://flygfiskcs-ineentho.rhcloud.com/';
+var socket = io(connectionUrl);
+message('Connecting to ' + connectionUrl);
 function message(data) {
     feed.innerHTML = data + '<br>' + feed.innerHTML;
 }
 socket.on('kill', function (data) {
-    message(JSON.stringify(data));
+    message('Kill: ' + JSON.stringify(data));
 });
 
 socket.on('connect', function () {
-    message('Connected');
+    message('Connected via ' + socket.io.engine.transport.name);
 });
 
 socket.on('connect_error', function () {
