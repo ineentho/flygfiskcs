@@ -13,7 +13,7 @@ console.log('asd');
 
 (0, _module3['default'])();
 
-var connectionUrl = window.location.hash.substr(1) || 'http://flygfiskcs-ineentho.rhcloud.com/';
+var connectionUrl = window.location.hash.substr(1) || 'http://flygfisk-stats.ineentho.com/';
 var socket = io(connectionUrl);
 message('Connecting to ' + connectionUrl);
 function message(data) {
