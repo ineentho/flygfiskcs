@@ -16,8 +16,17 @@ body {
   transition: 2s;
 }
 .background .top {
-  opacity: 1;
+  background: #000;
 }
 .background .bottom {
   z-index: -2;
+}
+.statusRect {
+  background: #f00;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: 0.5s;
 }
