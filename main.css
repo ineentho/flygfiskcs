@@ -15,11 +15,8 @@ body {
   background-repeat: no-repeat;
   transition: 2s;
 }
-.background .top {
-  background: #000;
-}
-.background .bottom {
-  z-index: -2;
+.background .hidden {
+  opacity: 0;
 }
 .statusRect {
   background: #f00;
@@ -32,8 +29,6 @@ body {
 }
 .feed {
   color: #fff;
-  margin-left: 50px;
-  margin-top: 50px;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   font-size: 1.2em;
 }

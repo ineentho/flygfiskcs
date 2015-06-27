@@ -7,12 +7,20 @@ Object.defineProperty(exports, '__esModule', {
 exports.setBackgroundMap = setBackgroundMap;
 exports.setStatus = setStatus;
 exports.setStatusMessage = setStatusMessage;
-var backgroundTop = document.querySelector('.background .top');
-var backgroundBottom = document.querySelector('.background .bottom');
 var statusRect = document.querySelector('.statusRect');
 
+/**
+ * Preloads the background image after which it animates the background in
+ */
+
 function setBackgroundMap(map) {
-    changeMap(map);
+    var url = 'static/maps/' + map + '.jpg';
+
+    var image = new Image();
+    image.src = url;
+    image.addEventListener('load', function () {
+        changeBackground(url);
+    });
 }
 
 function setStatus(status) {
@@ -23,32 +31,22 @@ function setStatusMessage(message) {
     statusRect.title = message;
 }
 
-function setBg(element, map) {
-    element.style.backgroundImage = 'url(static/maps/' + map + '.jpg)';
-}
+function changeBackground(url) {
+    var imageElem = document.createElement('div');
+    imageElem.className = 'hidden';
+    imageElem.style.backgroundImage = 'url(' + url + ')';
 
-function changeMap(map) {
-    console.log('change map', map);
-    var url = 'static/maps/' + map + '.jpg';
-    setBg(backgroundBottom, map);
-    var image = new Image();
-    image.src = url;
-    image.addEventListener('load', function () {
-        console.log('load', map);
-        setBg(backgroundBottom, map);
-        backgroundTop.style.opacity = 0;
-        window.setTimeout(function () {
-            console.log('reset', map);
-            backgroundTop.style.transition = '0s';
-            window.setTimeout(function () {
-                backgroundTop.style.opacity = '1';
-                backgroundTop.style.backgroundImage = backgroundBottom.style.backgroundImage;
-                window.setTimeout(function () {
-                    backgroundTop.style.transition = '2s';
-                }, 0);
-            }, 0);
-        }, 2500);
-    });
+    var parent = document.querySelector('.background');
+    parent.appendChild(imageElem);
+
+    // Make sure that there are no old images cluttering the DOM
+    if (parent.childElementCount > 2) {
+        parent.removeChild(parent.firstElementChild);
+    }
+
+    window.setTimeout(function () {
+        imageElem.className = '';
+    }, 0);
 }
 },{}],2:[function(require,module,exports){
 'use strict';
