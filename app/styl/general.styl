@@ -33,3 +33,33 @@ html, body
     -1px 1px 0 #000,
     1px 1px 0 #000;
   font-size 1.2em
+  position absolute
+  right 30px
+  top 30px
+  text-align right
+  font-family Verdana, Geneva, sans-serif
+
+.feed span
+  margin-left 5px
+
+.feed .name
+  color #c4eefe
+
+.feed .eloGain
+  color green
+
+.feed .eloLoss
+  color red
+
+.feed
+  .elo::before
+    content '['
+
+  .elo::after
+    content ']'
+
+  .eloChange::before
+    content '('
+
+  .eloChange::after
+    content ')'
