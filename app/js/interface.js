@@ -1,11 +1,19 @@
 'use strict';
 
-const backgroundTop = document.querySelector('.background .top');
-const backgroundBottom = document.querySelector('.background .bottom');
 const statusRect = document.querySelector('.statusRect');
 
+
+/**
+ * Preloads the background image after which it animates the background in
+ */
 export function setBackgroundMap(map) {
-    changeMap(map);
+    const url = 'static/maps/' + map + '.jpg';
+
+    const image = new Image();
+    image.src = url;
+    image.addEventListener('load', function () {
+        changeBackground(url);
+    });
 }
 
 export function setStatus(status) {
@@ -16,32 +24,20 @@ export function setStatusMessage(message) {
     statusRect.title = message;
 }
 
+function changeBackground(url) {
+    const imageElem = document.createElement('div');
+    imageElem.className = 'hidden';
+    imageElem.style.backgroundImage = `url(${url})`;
 
-function setBg(element, map) {
-    element.style.backgroundImage = 'url(static/maps/' + map + '.jpg)';
-}
+    const parent = document.querySelector('.background');
+    parent.appendChild(imageElem);
 
-function changeMap(map) {
-    console.log('change map', map);
-    const url = 'static/maps/' + map + '.jpg';
-    setBg(backgroundBottom, map);
-    const image = new Image();
-    image.src = url;
-    image.addEventListener('load', function() {
-        console.log('load', map);
-        setBg(backgroundBottom, map);
-        backgroundTop.style.opacity = 0;
-        window.setTimeout(function () {
-            console.log('reset', map);
-            backgroundTop.style.transition = '0s';
-            window.setTimeout(function () {
-                backgroundTop.style.opacity = '1';
-                backgroundTop.style.backgroundImage = backgroundBottom.style.backgroundImage;
-                window.setTimeout(function() {
-                    backgroundTop.style.transition = '2s';
-                }, 0)
-            }, 0);
+    // Make sure that there are no old images cluttering the DOM
+    if (parent.childElementCount > 2) {
+        parent.removeChild(parent.firstElementChild);
+    }
 
-        }, 2500);
-    })
+    window.setTimeout(function () {
+        imageElem.className = '';
+    }, 0);
 }
