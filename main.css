@@ -31,4 +31,33 @@ body {
   color: #fff;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   font-size: 1.2em;
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  text-align: right;
+  font-family: Verdana, Geneva, sans-serif;
+}
+.feed span {
+  margin-left: 5px;
+}
+.feed .name {
+  color: #c4eefe;
+}
+.feed .eloGain {
+  color: #008000;
+}
+.feed .eloLoss {
+  color: #f00;
+}
+.feed .elo::before {
+  content: '[';
+}
+.feed .elo::after {
+  content: ']';
+}
+.feed .eloChange::before {
+  content: '(';
+}
+.feed .eloChange::after {
+  content: ')';
 }

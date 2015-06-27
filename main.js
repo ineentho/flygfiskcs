@@ -51,25 +51,61 @@ function changeBackground(url) {
 },{}],2:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+var feed = {};
+
+exports.feed = feed;
+var FeedItem = function FeedItem(killer, victim, eloChange) {
+    this.killer = m.prop(killer);
+    this.victim = m.prop(victim);
+    this.eloChange = m.prop(eloChange);
+};
+
+var Feed = Array;
+
+feed.vm = {
+    init: function init() {
+        feed.vm.list = new Feed();
+
+        feed.vm.add = function (killer, victim, eloChange) {
+            m.startComputation();
+            feed.vm.list.unshift(new FeedItem(killer, victim, eloChange));
+
+            if (feed.vm.list.length > 9) {
+                feed.vm.list.pop();
+            }
+            m.endComputation();
+        };
+    }
+};
+
+feed.controller = function () {
+    feed.vm.init();
+};
+
+feed.view = function () {
+    return m('div', [feed.vm.list.map(function (item) {
+        return m('div', [m('span.name', item.killer().displayName), m('span.elo', item.killer().elo), m('span.eloChange.eloGain', '+' + item.eloChange()), m('span.killed', 'killed'), m('span.name', item.victim().displayName), m('span.elo', item.victim().elo), m('span.eloChange.eloLoss', '-' + item.eloChange())]);
+    })]);
+};
+
+m.mount(document.querySelector('.feed'), feed);
+},{}],3:[function(require,module,exports){
+'use strict';
+
 var _interface = require('./interface');
 
-var feed = document.querySelector('.feed');
+var _killfeed = require('./killfeed');
 
 var connectionUrl = window.location.hash.substr(1) || 'http://flygfisk-stats.ineentho.com:8000/';
 var socket = io(connectionUrl);
-function message(data) {
-    feed.innerHTML = data + '<br>' + feed.innerHTML;
-}
 socket.on('kill', function (data) {
     var attacker = data.attacker;
     var victim = data.victim;
 
-    attacker.elo = Math.round(attacker.elo * 100) / 100;
-    victim.elo = Math.round(victim.elo * 100) / 100;
-    data.eloChange = Math.round(data.eloChange * 100) / 100;
-
-    var msg = attacker.displayName + '[' + attacker.elo + '] (<span style=\'color:green\'>+' + data.eloChange + ')</span> killed\n        ' + victim.displayName + '[' + victim.elo + '] (<span style=\'color:red\'>-' + data.eloChange + '</span>)';
-    message(msg);
+    _killfeed.feed.vm.add(attacker, victim, data.eloChange);
 });
 
 socket.on('map', function (map) {
@@ -89,4 +125,4 @@ socket.on('reconnect', function () {
 socket.on('reconnecting', function (n) {
     (0, _interface.setStatusMessage)('Reconnecting (attempt #' + n + ')');
 });
-},{"./interface":1}]},{},[2])
+},{"./interface":1,"./killfeed":2}]},{},[3])
