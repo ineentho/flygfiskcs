@@ -21,9 +21,9 @@ var stylus = compileStylus('./app/styl/', 'main.styl', './main.css');
 
 var jade = compileJade('./app/jade');
 
-var screenshots = funnel('screenshots', {
-    destDir: 'screenshots'
+var staticFiles = funnel('./app/static', {
+    destDir: 'static'
 });
 
 
-module.exports = mergeTrees([jade, screenshots, js, stylus, socketIO]);
+module.exports = mergeTrees([jade, staticFiles, js, stylus, socketIO]);
