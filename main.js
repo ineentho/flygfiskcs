@@ -63,7 +63,15 @@ function message(data) {
     feed.innerHTML = data + '<br>' + feed.innerHTML;
 }
 socket.on('kill', function (data) {
-    message('Kill: ' + JSON.stringify(data));
+    var attacker = data.attacker;
+    var victim = data.victim;
+
+    attacker.elo = Math.round(attacker.elo * 100) / 100;
+    victim.elo = Math.round(victim.elo * 100) / 100;
+    data.eloChange = Math.round(data.eloChange * 100) / 100;
+
+    var msg = attacker.displayName + '[' + attacker.elo + '] (<span style=\'color:green\'>+' + data.eloChange + ')</span> killed\n        ' + victim.displayName + '[' + victim.elo + '] (<span style=\'color:red\'>-' + data.eloChange + '</span>)';
+    message(msg);
 });
 
 socket.on('map', function (map) {
