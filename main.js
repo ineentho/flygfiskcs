@@ -61,6 +61,10 @@ var FeedItem = function FeedItem(killer, victim, eloChange) {
     this.killer = m.prop(killer);
     this.victim = m.prop(victim);
     this.eloChange = m.prop(eloChange);
+
+    if (this.killer().bot) this.killer().displayName = 'BOT ' + this.killer().displayName;
+
+    if (this.victim().bot) this.victim().displayName = 'BOT ' + this.victim().displayName;
 };
 
 var Feed = Array;
@@ -99,6 +103,8 @@ var _interface = require('./interface');
 
 var _killfeed = require('./killfeed');
 
+var _scoreboard = require('./scoreboard');
+
 var connectionUrl = window.location.hash.substr(1) || 'http://flygfisk-stats.ineentho.com:8000/';
 var socket = io(connectionUrl);
 socket.on('kill', function (data) {
@@ -106,6 +112,10 @@ socket.on('kill', function (data) {
     var victim = data.victim;
 
     _killfeed.feed.vm.add(attacker, victim, data.eloChange);
+});
+
+socket.on('scoreboardchange', function (data) {
+    _scoreboard.scoreboard.vm.add(data);
 });
 
 socket.on('map', function (map) {
@@ -125,4 +135,80 @@ socket.on('reconnect', function () {
 socket.on('reconnecting', function (n) {
     (0, _interface.setStatusMessage)('Reconnecting (attempt #' + n + ')');
 });
-},{"./interface":1,"./killfeed":2}]},{},[3])
+},{"./interface":1,"./killfeed":2,"./scoreboard":4}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+var scoreboard = {};
+
+exports.scoreboard = scoreboard;
+var ScoreboardItem = function ScoreboardItem(player) {
+    this.elo = m.prop(player.elo);
+    this.displayName = m.prop((player.bot ? 'BOT ' : '') + player.displayName);
+    this.tag = m.prop(player.tag);
+    this.kills = m.prop(player.kills);
+    this.deaths = m.prop(player.deaths);
+    this.recentlyChangedElo = m.prop(false);
+
+    // Cheap, should replace elo
+    this.setElo = function (newElo) {
+        var up = newElo > this.elo();
+        this.elo(newElo);
+        m.startComputation();
+        this.recentlyChangedElo(up ? 'highlightGood' : 'highlightBad');
+        m.endComputation();
+
+        var instance = this;
+        window.setTimeout(function () {
+            m.startComputation();
+            instance.recentlyChangedElo(false);
+            m.endComputation();
+        }, 500);
+    };
+};
+
+var Scoreboard = Array;
+
+scoreboard.vm = {
+    init: function init() {
+        scoreboard.vm.list = new Scoreboard();
+
+        scoreboard.vm.add = function (player) {
+            m.startComputation();
+            var eloChanged = false;
+            scoreboard.vm.list.forEach(function (elem) {
+                if (elem.tag() == player.tag) {
+                    elem.setElo(player.elo);
+                    elem.kills(player.kills);
+                    elem.deaths(player.deaths);
+                    eloChanged = true;
+                }
+            });
+
+            if (!eloChanged) {
+                scoreboard.vm.list.push(new ScoreboardItem(player));
+            }
+            scoreboard.vm.list.sort(function (a, b) {
+                return b.elo() - a.elo();
+            });
+            m.endComputation();
+        };
+    }
+};
+
+window.scoreboard = scoreboard;
+
+scoreboard.controller = function () {
+    scoreboard.vm.init();
+};
+
+scoreboard.view = function () {
+    return m('table', [m('tr', [m('th', '#'), m('th', 'PLAYER'), m('th', 'SCORE'), m('th', 'K'), m('th', 'D')]), scoreboard.vm.list.map(function (o, i) {
+        return m('tr.scoreLine', [m('td.rank', i + 1), m('td.name', o.displayName()), m('td.elo', { className: o.recentlyChangedElo() ? o.recentlyChangedElo() : '' }, o.elo()), m('td.kills', o.kills()), m('td.deaths', o.deaths())]);
+    })]);
+};
+
+m.mount(document.querySelector('.scoreboard'), scoreboard);
+},{}]},{},[3])
