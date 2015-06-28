@@ -4,6 +4,12 @@ const FeedItem = function (killer, victim, eloChange) {
     this.killer = m.prop(killer);
     this.victim = m.prop(victim);
     this.eloChange = m.prop(eloChange);
+
+    if (this.killer().bot)
+        this.killer().displayName = 'BOT ' + this.killer().displayName;
+
+    if (this.victim().bot)
+        this.victim().displayName = 'BOT ' + this.victim().displayName;
 };
 
 const Feed = Array;
